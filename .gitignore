@@ -1,0 +1,42 @@
+HELP.md
+target/
+!**/src/main/**
+!**/src/test/**
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+http
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
+### VS Code ###
+.vscode/
+
+### ePricer ###
+/config/*
+/data/*
+/bin/*
+!.placeholder
+.mvn/wrapper/maven-wrapper.jar
+
+# System Files
+.DS_Store
+Thumbs.db

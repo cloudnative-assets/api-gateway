@@ -1,0 +1,67 @@
+# This file has local development environment configuration and is not commited to Git.
+# It augments and overrides configuration items specified in any other sources.
+
+# Most detailed logging of HTTP traffic:
+#logging.level.reactor.netty : DEBUG
+#spring.cloud.gateway.httpserver.wiretap : true
+#spring.cloud.gateway.httpclient.wiretap : true
+
+logging.level.org.springframework.security : TRACE
+
+# Logging date-time format to replace the default ISO8601/America/New_York 
+logging.pattern.dateformat : HH:mm:ss.SSS
+
+
+
+# Explicit service locations
+#epricer.services : 
+#   epricer-hello : http://localhost:8085/rpc
+#   epricer-myservice : http://localhost:8084/rpc
+
+# Development profile uses ONLY basic authentication, while default profile can use both Basic and OAuth
+#spring.profiles.active : development
+
+# Development password, enables Basic authentication if specified with default profile
+epricer.gateway.password : "epricer"
+   
+spring.security.oauth2.resourceserver.jwt :
+   # Location of the authorization server public key for token verification:
+   issuer-uri : https://us-south.appid.cloud.ibm.com/oauth/v4/23d984cc-80da-4894-98a8-494b839b193c
+   # Gateway will start even if issuer uri is unavailable at the start-up moment: 
+   #jwk-set-uri: https://us-south.appid.cloud.ibm.com/oauth/v41/23d984cc-80da-4894-98a8-494b839b193c/publickeys
+
+epricer.gateway.oauth :
+   # List of trusted appid clients:
+   trusted-aud : "50d9114a-46ea-4d96-b0ab-1a8ab15741aa, 95431239-470f-4a34-be1f-e86e34346aff"
+   # List of impersonating appid clients from the trusted list:  
+   impersonator-aud : "95431239-470f-4a34-be1f-e86e34346aff, another client id can be here"
+
+
+epricer.datasource :
+     pref:
+       jdbc-url : jdbc:db2://dgwdcepdb601.sl.bluecloud.ibm.com:50001/CTMPREF
+       username : 
+       password :        
+
+epricer.trustcert : 
+     - |
+        -----BEGIN CERTIFICATE-----
+        MIID5TCCAs2gAwIBAgIBFDANBgkqhkiG9w0BAQsFADBiMQswCQYDVQQGEwJVUzE0MDIGA1UEChMr
+        SW50ZXJuYXRpb25hbCBCdXNpbmVzcyBNYWNoaW5lcyBDb3Jwb3JhdGlvbjEdMBsGA1UEAxMUSUJN
+        IEludGVybmFsIFJvb3QgQ0EwHhcNMTYwMjI0MDUwMDAwWhcNMzUwMTAzMDQ1OTU5WjBiMQswCQYD
+        VQQGEwJVUzE0MDIGA1UEChMrSW50ZXJuYXRpb25hbCBCdXNpbmVzcyBNYWNoaW5lcyBDb3Jwb3Jh
+        dGlvbjEdMBsGA1UEAxMUSUJNIEludGVybmFsIFJvb3QgQ0EwggEiMA0GCSqGSIb3DQEBAQUAA4IB
+        DwAwggEKAoIBAQDUKGuk9Tmri43R3SauS7gY9rQ9DXvRwklnbW+3Ts8/Meb4MPPxezdEcqVJtHVc
+        3kinDpzVMeKJXlB8CABBpxMBSLApmIQywEKoVd0H0w62Yc3rYuhv03iYy6OozBV0BL6tzZE0Ubvt
+        LGuAQXMZ7ehzxqIta85JjfFN86AO2u7xrNF0FYyGH+E0Rn6yNhb25VrqxE0OYbSMIGoWdvS11K4S
+        gVDqrJ9OqIk8NHrIJ8Ed24P/YPMeAp3jU409Gev1zGcuLdRr09WckQ145FZVDbPq42gcl7qYICPh
+        Z4/eDUUjFgxpipfMGkMb1X+Y3kFDgb4BO8Xrdda2VQo1iDZs8A8bAgMBAAGjgaUwgaIwPwYJYIZI
+        AYb4QgENBDIWMEdlbmVyYXRlZCBieSB0aGUgU2VjdXJpdHkgU2VydmVyIGZvciB6L09TIChSQUNG
+        KTAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU+d4Y5Z4wE2lRp/15
+        hUiMfA5v2OMwHwYDVR0jBBgwFoAU+d4Y5Z4wE2lRp/15hUiMfA5v2OMwDQYJKoZIhvcNAQELBQAD
+        ggEBAH87Ms8yFyAb9nXesaKjTHksLi1VKe2izESWozYFXnRtOgOW7/0xXcfK+7PW6xwcOqvTk61f
+        qTGxj+iRyZf2e3FNtIB+T/Lg3SZF9sztPM0jEUELWycC8l6WPTvzQjZZBCsF+cWbU1nxvRNQluzC
+        sTDUEIfThJIFcLu0WkoQclUrC3d2tM8jclLPssb6/OV8GaJ+4mx4ri7HbGaUAOtA/TXKR6AuhgkR
+        NPKYhpPU0q/PRlGXdwJP8zXb8+CXMMTnI5Upur7Tc5T3I/x1Gqfz7n1sTRZfsuiQJ5uua4hz4te3
+        oV2tm7LWcNItHD43zttBTTx/m5icg71JE2gcr2oincw=
+        -----END CERTIFICATE-----

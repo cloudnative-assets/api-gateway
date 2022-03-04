@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--  
+	Spring boot logging how-to:
+	https://docs.spring.io/spring-boot/docs/2.3.2.RELEASE/reference/html/howto.html#howto-logging
+	Default logback configuration:
+	https://github.com/spring-projects/spring-boot/tree/master/spring-boot-project/spring-boot/src/main/resources/org/springframework/boot/logging/logback 
+-->
+
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<property name="CUSTOM_LOG_PATTERN" value="%d{${LOG_DATEFORMAT_PATTERN:-ISO8601,America/New_York}} ${LOG_LEVEL_PATTERN:-%5p} - [%15.15t] %-50.50logger{49} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+	
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<!-- default is CONSOLE_LOG_PATTERN -->
+			<pattern>${CUSTOM_LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="CONSOLE" />
+	</root>
+</configuration>

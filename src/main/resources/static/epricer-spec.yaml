@@ -1,0 +1,98 @@
+openapi: 3.0.1
+info:
+  title: epricer service specification
+  description: >-
+    Tribe Leader - [`Nicole K.
+    Morneau`](https://w3.ibm.com/bluepages/profile.html?uid=819226897)
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Analytics and HW Pricing Tribe
+  url: 'https://w3.ibm.com/w3publisher/fsc-prc/team#hardwarePricing'
+servers:
+  - url: >-
+       https://epricer-gateway-dev1.dal1a.ciocloud.nonprod.intranet.ibm.com
+  - url: 'http://localhost:9090'
+security:
+- BasicAuth: []
+tags:
+  - name: goe-compliance
+    description: 'Manage the request to compliance if the bid needs to be focus or not'
+paths:
+  /epricer/api/goecompliance/v1/getanalysis:
+    summary: Gets goe compliance analysis results
+    post:
+      summary: send the bid to analisys
+      description: Returns if the bid is eligible to analisys, if the bid was eligible it return the result of focus bid
+      operationId: GoeCompliance
+      requestBody:
+        description: Request goe analisys
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoeComplianceInput'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoeComplianceOutput'
+              example:
+                code: 200
+                message: 'OK'
+                eligible: 'Y'
+                focusbid: 'N'
+        100:
+          description: Communication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoeComplianceOutput'
+              example:
+                code: 100
+                message: 'Error in BRET happened'
+                eligible: ''
+                focusbid: ''
+        default:
+          description: Unknown Technical Error
+      tags:
+        - goe-compliance
+components:
+  schemas:
+    GoeComplianceInput:
+      required:
+        - quoteid
+        - countrycode
+        - hasgoeaccount
+        - bidtypecode
+        - bpquotestatuscode
+        - bpnewquotestatuscode
+      properties:
+        quoteid:
+          type: number
+        countrycode:
+          type: string
+        hasgoeaccount:
+          type: string
+        bidtypecode:
+          type: string
+        bpquotestatuscode:
+          type: string
+        bpnewquotestatuscode:
+          type: string
+    GoeComplianceOutput:
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        eligible:
+          type: boolean
+        focusbid:
+          type: string
+
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic

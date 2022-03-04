@@ -1,0 +1,52 @@
+# The following environment variables should be defined in Travis:
+# ----------------------------------------------------------------
+# ARTIFACTORY_USER - functional ID to access artifactory
+# ARTIFACTORY_PWD - password for the above functional ID
+# CIRRUS_USER & CIRRUS_PWD - Cirrus registry credentials
+# ----------------------------------------------------------------
+
+if: branch = develop
+
+sudo: true
+
+git:
+  depth: false
+
+language: java
+
+jdk:
+  - oraclejdk11
+
+services:
+- docker
+
+install: 
+- echo '<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">' > $HOME/.m2/settings.xml
+- echo '  <servers><server>' >> $HOME/.m2/settings.xml
+- echo '      <id>epricer.snapshots</id>' >> $HOME/.m2/settings.xml
+- echo '      <username>${env.ARTIFACTORY_USER}</username>' >> $HOME/.m2/settings.xml
+- echo '      <password>${env.ARTIFACTORY_PWD}</password>' >> $HOME/.m2/settings.xml
+- echo '  </server><server>' >> $HOME/.m2/settings.xml
+- echo '      <id>epricer.releases</id>' >> $HOME/.m2/settings.xml
+- echo '      <username>${env.ARTIFACTORY_USER}</username>' >> $HOME/.m2/settings.xml
+- echo '      <password>${env.ARTIFACTORY_PWD}</password>' >> $HOME/.m2/settings.xml
+- echo '  </server></servers>' >> $HOME/.m2/settings.xml
+- echo '  <profiles><profile>' >> $HOME/.m2/settings.xml
+- echo '    <id>default</id>' >> $HOME/.m2/settings.xml
+- echo '    <activation><activeByDefault>true</activeByDefault></activation>' >> $HOME/.m2/settings.xml
+- echo '    <repositories><repository>' >> $HOME/.m2/settings.xml
+- echo '    <id>epricer.snapshots</id>' >> $HOME/.m2/settings.xml
+- echo '       <name>Epricer DEV Repository for Snapshots</name>' >> $HOME/.m2/settings.xml
+- echo '       <url>https://na.artifactory.swg-devops.com:443/artifactory/txo-shw-pricing-team-epricer-next-dev-snapshot-maven-local</url>' >> $HOME/.m2/settings.xml
+- echo '    </repository><repository>' >> $HOME/.m2/settings.xml
+- echo '    <id>epricer.releases</id>' >> $HOME/.m2/settings.xml
+- echo '       <name>Epricer DEV Repository for Releases</name>' >> $HOME/.m2/settings.xml
+- echo '       <url>https://na.artifactory.swg-devops.com:443/artifactory/txo-shw-pricing-team-epricer-next-dev-rc-maven-local</url>' >> $HOME/.m2/settings.xml
+- echo '    </repository></repositories>' >> $HOME/.m2/settings.xml
+- echo '  </profile></profiles>' >> $HOME/.m2/settings.xml
+- echo '</settings>' >> $HOME/.m2/settings.xml
+- cat $HOME/.m2/settings.xml
+- chmod +x mvnw
+- chmod +x build.sh
+
+script: ./build.sh

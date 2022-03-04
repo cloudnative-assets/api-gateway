@@ -1,0 +1,161 @@
+# Gateway end-points:
+#
+# /         Protected internal inter-service RPC communication           
+# /rpc      Internal inter-service RPC communication exposed to external callers for development
+# /epricer  Secure access to epricer services from external clients using internal RPC protocol
+#
+# All others are REST endpoints for external clients
+
+##############################################################EXAMPLES#########################################################
+
+      # Greeting service, individual with simple name
+      # curl -X GET http://localhost:9090/services/v1/greeting/PHP10096
+#      - id: epricer-myservice-greeting-one
+#        uri: forward:///get-convert
+#        predicates:
+#        - Path=/services/v{version}/greeting/{name}
+#        - Method=GET
+#        filters:
+#        - AuthorizeEpricerFunction=greeting
+#        - SetEpricerHeaders=epricer-myservice, greeting, {version}, {name}
+
+      # Greeting service, individual with complex name passed as two path variables
+      # curl -X GET http://localhost:9090/services/v1/greeting/PHP/10096
+#      - id: epricer-myservice-greeting-one-complex-path
+#        uri: forward:///get-convert
+#        predicates:
+#        - Path=/services/v{version}/greeting/{name1}/{name2}
+#        - Method=GET
+#        filters:
+#        - AuthorizeEpricerFunction=greeting
+#        - SetEpricerHeaders=epricer-myservice, complex-greeting, {version}, name1={name1}&name2={name2}
+
+      # Greeting service, individual with complex name passed as two URL variables
+      # curl -X GET http://localhost:9090/services/v1/greeting?name1=PHP&name2=10096
+#      - id: epricer-myservice-greeting-one-complex-url
+#        uri: forward:///get-convert
+#        predicates:
+#        - Path=/services/v{version}/greeting
+#        - Query=name1
+#        - Query=name2
+#        - Method=GET
+#        filters:
+#        - AuthorizeEpricerFunction=greeting
+#        - SetEpricerHeaders=epricer-myservice, complex-greeting, {version}
+
+      # Greeting service, individual with complex name passed as one path and one url variable
+      # curl -X GET http://localhost:9090/services/v1/greeting-too/PHP?name2=10096
+#      - id: epricer-myservice-greeting-one-complex-path-and-url
+#        uri: forward:///get-convert
+#        predicates:
+#        - Path=/services/v{version}/greeting-too/{name}
+#        - Query=name2
+#        - Method=GET
+#        filters:
+#        - AuthorizeEpricerFunction=greeting
+#        - SetEpricerHeaders=epricer-myservice, complex-greeting, {version}, name1={name}
+
+      # Greeting service, the whole world
+      # curl -X GET http://localhost:9090/services/v1/greeting
+#      - id: epricer-myservice-greeting-world
+#        uri: forward:///get-convert
+#        predicates:
+#        - Path=/services/v{version}/greeting
+#        - Method=GET
+#        filters:
+#        - AuthorizeEpricerFunction=greeting
+#        - SetEpricerHeaders=epricer-myservice, greet-the-world, {version}
+
+      # Universal service invoker with parameters passed as URL variables
+      # curl -X GET http://localhost:9090/epricer/v1/epricer-myservice/spcn?country=US&discount=0.441
+#      - id: universal-get
+#        uri: forward:///get-convert
+#        predicates:
+#        - Path=/get/v{version}/{service-id}/{endpoint-id}
+#        - Method=GET
+#        filters:
+#        - SetEpricerHeaders={service-id}, {endpoint-id}, {version}
+##############################################################END OF EXAMPLES#########################################################
+
+spring:
+  cloud:
+    gateway:
+      routes:
+
+      # RPC protocol exposed to external trusted callers
+      - id: rpc
+        uri: forward:///
+        predicates:
+        - Path=/rpc
+        - Method=POST
+      
+      # RPC protocol for epricer RW
+      - id: epricer
+        uri: forward:///post-convert
+        predicates:
+        - Path=/epricer
+        - Method=POST
+        
+      - id: epricer-goe-compliance
+        uri: forward:///post-convert
+        predicates:
+        - Path=/epricer/api/goecompliance/v{version}/getanalysis
+        - Method=POST
+        filters:
+        - SetEpricerHeaders=epricer-goe-compliance, get-goe-compliance-analysis, {version}
+        
+      - id: epricer-quote-data
+        uri: forward:///post-convert
+        predicates:
+        - Path=/epricer/api/quotedata/v{version}/getbretquotedata
+        - Method=POST
+        filters:
+        - SetEpricerHeaders=epricer-quote-data, get-bret-quote-data, {version}
+        
+      - id: epricer-end-customer
+        uri: forward:///post-convert
+        predicates:
+        - Path=/epricer/api/endcustomer/v{version}/searchendcustomer
+        - Method=POST
+        filters:
+        - SetEpricerHeaders=epricer-end-customer, search-end-customer, {version}
+        
+      - id: epricer-end-customer
+        uri: forward:///post-convert
+        predicates:
+        - Path=/epricer/api/endcustomer/v{version}/retrieveendcustomer
+        - Method=POST
+        filters:
+        - SetEpricerHeaders=epricer-end-customer, retrieve-end-customer, {version}
+
+      - id: epricer-quote-tax
+        uri: forward:///post-convert
+        predicates:
+        - Path=/epricer/api/quotetax/v{version}/inittax
+        - Method=POST
+        filters:
+        - SetEpricerHeaders=epricer-quote-tax, init-quote-tax, {version}
+          
+      - id: epricer-quote-tax
+        uri: forward:///post-convert
+        predicates:
+        - Path=/epricer/api/quotetax/v{version}/gettax
+        - Method=POST
+        filters:
+        - SetEpricerHeaders=epricer-quote-tax, get-quote-tax, {version}
+            
+      - id: epricer-quote-tax
+        uri: forward:///post-convert
+        predicates:
+        - Path=/epricer/api/quotetax/v{version}/refreshtax
+        - Method=POST
+        filters:
+        - SetEpricerHeaders=epricer-quote-tax, refresh-quote-tax, {version}  
+          
+      - id: epricer-quote-tax
+        uri: forward:///post-convert
+        predicates:
+        - Path=/epricer/api/quotetax/v{version}/computetax
+        - Method=POST
+        filters:
+        - SetEpricerHeaders=epricer-quote-tax, compute-quote-tax, {version}
